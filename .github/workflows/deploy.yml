@@ -58,9 +58,14 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f k8s/auth-service.yaml
-          kubectl apply -f k8s/trips-service.yaml
-          kubectl apply -f k8s/expenses-service.yaml
-          kubectl apply -f k8s/users-service.yaml
-          kubectl apply -f k8s/categories-service.yaml
-          kubectl apply -f k8s/ingress.yaml
+          kubectl apply -f k8s/services/auth-service.yaml
+          kubectl apply -f k8s/services/trips-service.yaml
+          kubectl apply -f k8s/services/expenses-service.yaml
+          kubectl apply -f k8s/services/users-service.yaml
+          kubectl apply -f k8s/services/categories-service.yaml
+          kubectl apply -f k8s/ingress.yml
+          kubectl apply -f k8s/deployments/auth-deployment.yaml
+          kubectl apply -f k8s/deployments/trips-deployment.yaml
+          kubectl apply -f k8s/deployments/expenses-deployment.yaml
+          kubectl apply -f k8s/deployments/users-deployment.yaml
+          kubectl apply -f k8s/deployments/categories-deployment.yaml
