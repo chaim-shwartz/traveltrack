@@ -30,11 +30,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Disable SSH strict host key checking
+      - name: Add SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "StrictHostKeyChecking no" >> ~/.ssh/config
-          
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H 129.159.157.78 >> ~/.ssh/known_hosts
+
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
         with:
