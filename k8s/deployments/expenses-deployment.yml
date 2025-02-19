@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expenses-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: expenses-service
+  template:
+    metadata:
+      labels:
+        app: expenses-service
+    spec:
+      containers:
+      - name: expenses-service
+        image: chaimshwartz/expenses-service:latest
+        ports:
+        - containerPort: 5002
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: DB_HOST
+          value: "postgres-expenses"
