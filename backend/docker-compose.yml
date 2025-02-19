@@ -1,0 +1,159 @@
+version: "3.8"
+
+services:
+  # Auth Service
+  auth:
+    image: chaimshwartz/auth-service:latest
+    build:
+      context: ./services/auth
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - USERS_SERVICE_URL=http://users:5004/api
+      - DB_HOST=postgres-auth
+      - DB_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=auth_service
+    depends_on:
+      - postgres-auth
+
+  # Trips Service
+  trips:
+    image: chaimshwartz/trips-service:latest
+    build:
+      context: ./services/trips
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - USERS_SERVICE_URL=http://users:5004/api
+      - AUTH_SERVICE_URL=http://auth:5000/auth
+      - DB_HOST=postgres-trips
+      - DB_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=trips_service
+    depends_on:
+      - postgres-trips
+
+  # Expenses Service
+  expenses:
+    image: chaimshwartz/expenses-service:latest
+    build:
+      context: ./services/expenses
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - CATEGORIES_SERVICE_URL=http://categories:5003/api
+      - AUTH_SERVICE_URL=http://auth:5000/auth
+      - DB_HOST=postgres-expenses
+      - DB_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=expenses_service
+    depends_on:
+      - postgres-expenses
+
+  # Categories Service
+  categories:
+    image: chaimshwartz/categories-service:latest
+    build:
+      context: ./services/categories
+      dockerfile: Dockerfile
+    ports:
+      - "5003:5003"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - USERS_SERVICE_URL=http://users:5004/api
+      - DB_HOST=postgres-categories
+      - DB_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=categories_service
+    depends_on:
+      - postgres-categories
+
+  # Users Service
+  users:
+    image: chaimshwartz/users-service:latest
+    build:
+      context: ./services/users
+      dockerfile: Dockerfile
+    ports:
+      - "5004:5004"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - MONGO_URI=mongodb://mongo-users:27017/users_db
+    depends_on:
+      - mongo-users
+
+  # PostgreSQL Databases (One for Each Service)
+  postgres-auth:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: auth_service
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata_auth:/var/lib/postgresql/data
+
+  postgres-trips:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: trips_service
+    ports:
+      - "5436:5432"
+    volumes:
+      - pgdata_trips:/var/lib/postgresql/data
+
+  postgres-expenses:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: expenses_service
+    ports:
+      - "5437:5432"
+    volumes:
+      - pgdata_expenses:/var/lib/postgresql/data
+
+  postgres-categories:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: categories_service
+    ports:
+      - "5438:5432"
+    volumes:
+      - pgdata_categories:/var/lib/postgresql/data
+
+  # MongoDB for Users Service
+  mongo-users:
+    image: mongo:5.0
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+volumes:
+  pgdata_auth:
+  pgdata_trips:
+  pgdata_expenses:
+  pgdata_categories:
+  mongodata:
+
+networks:
+  default:
+    driver: bridge

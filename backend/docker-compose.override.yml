@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  trips:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./services/trips:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
+
+  users:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./services/users:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
+
+  categories:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./services/categories:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
+
+  expenses:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./services/expenses:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
+
+  auth:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./services/auth:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
