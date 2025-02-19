@@ -41,7 +41,7 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
 
       - name: Pull latest code on the server
-        run: ssh ubuntu@your-server 'cd /path/to/project && git pull origin main'
+        run: ssh ubuntu@129.159.157.78 'cd /path/to/project && git pull origin main'
 
       - name: Apply Kubernetes Configurations
         run: |
