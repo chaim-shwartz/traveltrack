@@ -3,7 +3,7 @@ name: Build and Deploy Microservices
 on:
   push:
     branches:
-      - main  # פועל כשאתה עושה `git push` ל-main
+      - main # פועל כשאתה עושה `git push` ל-main
 
 jobs:
   build_and_push:
@@ -30,6 +30,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Disable SSH strict host key checking
+        run: |
+          mkdir -p ~/.ssh
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+          
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
         with:
