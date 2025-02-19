@@ -61,4 +61,3 @@ jobs:
           for service in auth trips expenses users categories; do
             kubectl rollout restart deployment/${service}-deployment
           done
-          
