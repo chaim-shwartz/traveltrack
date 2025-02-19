@@ -18,27 +18,27 @@ jobs:
 
       - name: Build and push Auth Service
         run: |
-          docker build -t chaimshwartz/auth-service:latest ./services/auth
+          docker build -t chaimshwartz/auth-service:latest ./backend/services/auth
           docker push chaimshwartz/auth-service:latest
 
       - name: Build and push Trips Service
         run: |
-          docker build -t chaimshwartz/trips-service:latest ./services/trips
+          docker build -t chaimshwartz/trips-service:latest ./backend/services/trips
           docker push chaimshwartz/trips-service:latest
 
       - name: Build and push Expenses Service
         run: |
-          docker build -t chaimshwartz/expenses-service:latest ./services/expenses
+          docker build -t chaimshwartz/expenses-service:latest ./backend/services/expenses
           docker push chaimshwartz/expenses-service:latest
 
       - name: Build and push Users Service
         run: |
-          docker build -t chaimshwartz/users-service:latest ./services/users
+          docker build -t chaimshwartz/users-service:latest ./backend/services/users
           docker push chaimshwartz/users-service:latest
 
       - name: Build and push Categories Service
         run: |
-          docker build -t chaimshwartz/categories-service:latest ./services/categories
+          docker build -t chaimshwartz/categories-service:latest ./backend/services/categories
           docker push chaimshwartz/categories-service:latest
 
   deploy:
