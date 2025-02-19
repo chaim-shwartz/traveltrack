@@ -8,7 +8,6 @@ on:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -16,36 +15,21 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build and push Auth Service
+      - name: Build and push Docker images
         run: |
-          docker build -t chaimshwartz/auth-service:latest ./backend/services/auth
-          docker push chaimshwartz/auth-service:latest
-
-      - name: Build and push Trips Service
-        run: |
-          docker build -t chaimshwartz/trips-service:latest ./backend/services/trips
-          docker push chaimshwartz/trips-service:latest
-
-      - name: Build and push Expenses Service
-        run: |
-          docker build -t chaimshwartz/expenses-service:latest ./backend/services/expenses
-          docker push chaimshwartz/expenses-service:latest
-
-      - name: Build and push Users Service
-        run: |
-          docker build -t chaimshwartz/users-service:latest ./backend/services/users
-          docker push chaimshwartz/users-service:latest
-
-      - name: Build and push Categories Service
-        run: |
-          docker build -t chaimshwartz/categories-service:latest ./backend/services/categories
-          docker push chaimshwartz/categories-service:latest
+          for service in auth trips expenses users categories; do
+            echo "Building and pushing $service..."
+            docker build --cache-from=chaimshwartz/$service-service:latest -t chaimshwartz/$service-service:latest ./backend/services/$service
+            docker push chaimshwartz/$service-service:latest
+          done
 
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push
-
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
         with:
@@ -56,16 +40,17 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
 
-      - name: Deploy to Kubernetes
+      - name: Pull latest code on the server
+        run: ssh ubuntu@your-server 'cd /path/to/project && git pull origin main'
+
+      - name: Apply Kubernetes Configurations
         run: |
-          kubectl apply -f k8s/services/auth-service.yaml
-          kubectl apply -f k8s/services/trips-service.yaml
-          kubectl apply -f k8s/services/expenses-service.yaml
-          kubectl apply -f k8s/services/users-service.yaml
-          kubectl apply -f k8s/services/categories-service.yaml
+          kubectl apply -f k8s/services/
+          kubectl apply -f k8s/deployments/
           kubectl apply -f k8s/ingress.yml
-          kubectl apply -f k8s/deployments/auth-deployment.yaml
-          kubectl apply -f k8s/deployments/trips-deployment.yaml
-          kubectl apply -f k8s/deployments/expenses-deployment.yaml
-          kubectl apply -f k8s/deployments/users-deployment.yaml
-          kubectl apply -f k8s/deployments/categories-deployment.yaml
+
+      - name: Restart Pods to apply new images
+        run: |
+          for service in auth trips expenses users categories; do
+            kubectl rollout restart deployment/${service}-deployment
+          done
