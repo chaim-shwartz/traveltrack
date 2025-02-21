@@ -50,6 +50,9 @@ jobs:
       - name: Pull latest code on the server
         run: ssh ubuntu@129.159.157.78 'cd traveltrack && git pull origin main'
 
+      - name: Set KUBECONFIG
+        run: export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        
       - name: Apply Kubernetes Configurations
         run: |
           sudo kubectl apply -f k8s/services/
