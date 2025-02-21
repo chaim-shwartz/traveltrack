@@ -52,13 +52,12 @@ jobs:
 
       - name: Apply Kubernetes Configurations
         run: |
-          kubectl apply -f k8s/services/
-          kubectl apply -f k8s/deployments/
-          kubectl apply -f k8s/ingress.yml
+          sudo kubectl apply -f k8s/services/
+          sudo kubectl apply -f k8s/deployments/
+          sudo kubectl apply -f k8s/ingress.yml
 
       - name: Restart Pods to apply new images
         run: |
           for service in auth trips expenses users categories; do
-            kubectl rollout restart deployment/${service}-deployment
+            sudo kubectl rollout restart deployment/${service}-deployment
           done
-          
