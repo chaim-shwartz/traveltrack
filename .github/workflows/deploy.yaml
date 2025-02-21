@@ -3,7 +3,7 @@ name: Build and Deploy Microservices
 on:
   push:
     branches:
-      - main # פועל כשאתה עושה `git push` ל-main
+      - main  # פועל כשעושים `git push` ל-main
 
 jobs:
   build_and_push:
@@ -37,30 +37,43 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H 129.159.157.78 >> ~/.ssh/known_hosts
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: latest
-
-      - name: Configure kubeconfig
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
-
       - name: Pull latest code on the server
         run: ssh ubuntu@129.159.157.78 'cd traveltrack && git pull origin main'
 
-      - name: Set KUBECONFIG
-        run: export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-        
+      - name: Use correct KUBECONFIG
+        run: |
+          ssh ubuntu@129.159.157.78 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml'
+
+      - name: Wait for K3s API Server
+        run: |
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          until kubectl get nodes; do
+            echo "Waiting for K3s API to be ready..."
+            sleep 5
+          done
+
+      - name: Cleanup old Kubernetes Resources
+        run: |
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          kubectl delete -f k8s/services/ --ignore-not-found=true
+          kubectl delete -f k8s/deployments/ --ignore-not-found=true
+          kubectl delete -f k8s/ingress.yml --ignore-not-found=true
+
       - name: Apply Kubernetes Configurations
         run: |
-          sudo kubectl apply -f k8s/services/
-          sudo kubectl apply -f k8s/deployments/
-          sudo kubectl apply -f k8s/ingress.yml
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          kubectl apply -f k8s/services/
+          kubectl apply -f k8s/deployments/
+          kubectl apply -f k8s/ingress.yml
 
       - name: Restart Pods to apply new images
         run: |
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           for service in auth trips expenses users categories; do
-            sudo kubectl rollout restart deployment/${service}-deployment
+            kubectl rollout restart deployment/${service}-deployment
           done
+
+      - name: Verify Deployments
+        run: |
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          kubectl get pods -A
