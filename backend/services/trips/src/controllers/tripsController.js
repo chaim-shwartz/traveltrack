@@ -8,6 +8,8 @@ const {
     createTripUserLink,
     getTripUsers,
     getUserIdByEmail,
+    removeUserFromTrip,
+    isAdminForTrip,
 } = require('../services/tripsService');
 
 const getTrips = async (req, res) => {
@@ -85,6 +87,11 @@ const addUserToTrip = async (req, res) => {
     const { email } = req.body; // מזהה המשתמש
 
     try {
+        // Check if the user is an admin
+        const isAdmin = await isAdminForTrip(req.user.id, tripId);
+        if (!isAdmin) {
+            return res.status(403).json({ message: 'Only admins can add users to the trip' });
+        }
 
         const userId = await getUserIdByEmail(email)
         if (!userId) {
@@ -117,5 +124,25 @@ const TripUsers = async (req, res) => {
     }
 };
 
+const removeSharedUserFromTrip = async (req, res) => {
+    const { id: tripId, userId } = req.params;
+    
+    try {
+        // Check if the user is an admin
+        const isAdmin = await isAdminForTrip(req.user.id, tripId);
+        if (!isAdmin) {
+            return res.status(403).json({ message: 'Only admins can remove users from the trip' });
+        }
 
-module.exports = { getTrips, addTrip, updateTrip, getTripById, deleteTrip, addUserToTrip, TripUsers };
+        await removeUserFromTrip(tripId, userId);
+        res.status(200).json({ message: 'User removed from the trip successfully' });
+    } catch (error) {
+        if (error.message === 'Cannot remove an admin from the trip') {
+            return res.status(400).json({ message: error.message });
+        }
+        console.error('Error removing user from trip:', error);
+        res.status(500).json({ message: 'Failed to remove user from the trip' });
+    }
+};
+
+module.exports = { getTrips, addTrip, updateTrip, getTripById, deleteTrip, addUserToTrip, TripUsers, removeSharedUserFromTrip };

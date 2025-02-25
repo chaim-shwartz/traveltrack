@@ -123,6 +123,8 @@ const translations = {
         role: 'Role',
         admin: 'Admin',
         user: 'User',
+        noTripsFound : 'No trips found',
+        you: 'You',
     },
     he: {
         welcome: 'ברוכים הבאים ל-TravelTrack',
@@ -248,6 +250,8 @@ const translations = {
         role: 'תפקיד',
         admin: 'מנהל',
         user: 'משתמש',
+        noTripsFound : 'לא נמצאו טיולים',
+        you: 'אתה',
     },
 };
 

@@ -10,8 +10,9 @@ import DailyExpensesBarChart from '../components/ExpensesBarChart';
 import Input from '../components/Input';
 import { AnimatePresence, motion } from 'framer-motion';
 import axios from 'axios';
+import { useUser } from '../context/UserContext';
 
-type Expense = {
+interface Expense {
     id: number;
     tripId: number;
     categoryId: number;
@@ -21,12 +22,12 @@ type Expense = {
     date: string;
 };
 
-type Category = {
+interface Category {
     id: number;
     name: string;
 };
 
-type Trip = {
+interface Trip {
     id: number;
     name: string;
     budget: number;
@@ -35,8 +36,14 @@ type Trip = {
     image: string;
     destination: string;
 };
+interface SharedUser {
+    userId: number;
+    email: string;
+    role: string;
+};
 
 export default function TripDetailsPage() {
+    const { user } = useUser();
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [trip, setTrip] = useState<Trip | null>(null);
@@ -58,7 +65,9 @@ export default function TripDetailsPage() {
     });
     const [newCategory, setNewCategory] = useState('');
     const [tripEditMode, setTripEditMode] = useState(false);
-    const [sharedUsers, setSharedUsers] = useState([]); // משתמשים שמשותפים לטיול
+
+
+    const [sharedUsers, setSharedUsers] = useState<SharedUser[]>([]); // משתמשים שמשותפים לטיול
     const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
     const t = useTranslation();
 
@@ -74,7 +83,11 @@ export default function TripDetailsPage() {
                 .then(([tripData, expensesData, categoriesData]) => {
                     setTrip(tripData);
                     setExpenses(expensesData.expenses);
-                    setCategories([...categoriesData, ...expensesData.tripCategories]);
+                    const combinedCategories = [...categoriesData, ...expensesData.tripCategories];
+                    const uniqueCategories = combinedCategories.filter((category, index, self) =>
+                        index === self.findIndex((c) => c.id === category.id)
+                    );
+                    setCategories(uniqueCategories);
                 })
                 .catch(console.error)
                 .finally(() => setLoading(false));
@@ -186,6 +199,11 @@ export default function TripDetailsPage() {
         try {
             const response = await axios.post(`http://localhost:5001/api/trips/${trip?.id}/add-user`, { email: newShareEmail }, { withCredentials: true });
             console.log(response.data.message);
+            // Clear the input field and close the share panel
+            setNewShareEmail('');
+            // setShowSharePanel(false);
+            // Optionally, you can fetch the updated shared users list
+            fetchSharedUsers();
         } catch (error) {
             console.error('Failed to share trip:', error);
             console.log('Failed to share trip');
@@ -205,6 +223,18 @@ export default function TripDetailsPage() {
             fetchSharedUsers();
         }
     }, [showSharePanel]);
+
+    const handleRemoveUser = async (userId: number) => {
+        const confirm = window.confirm(t.confirmRemoveUser);
+        if (confirm) {
+            try {
+                await axios.delete(`http://localhost:5001/api/trips/${trip?.id}/remove-user/${userId}`, { withCredentials: true });
+                setSharedUsers(sharedUsers.filter((user) => user.userId !== userId));
+            } catch (error) {
+                console.error(t.failedToRemoveUser, error);
+            }
+        }
+    };
 
     if (loading) {
         return (
@@ -717,14 +747,37 @@ export default function TripDetailsPage() {
                     <div>
                         <h3 className="text-lg font-bold">{t.sharedWith}</h3>
                         <ul className="space-y-2">
-                            {sharedUsers.map((user) => (
-                                <li
-                                    key={user.user_id}
-                                    className="flex justify-between items-center p-2 border rounded-lg shadow-sm"
-                                >
-                                    <span>{user.email}</span>
-                                    <span className="text-sm text-gray-500">{user.role}</span>
-                                </li>
+                            {sharedUsers.map((sharedUser) => (
+                                sharedUser.userId === user?._id ? (
+                                    <li
+                                        key={sharedUser.userId}
+                                        className="flex justify-between items-center p-2 border rounded-lg shadow-sm bg-gray-100"
+                                    >
+                                        <span>{t.you}</span>
+                                        <span className="text-sm text-gray-500">{sharedUser.role}</span>
+                                    </li>
+                                ) : null
+                            ))}
+                            {sharedUsers.map((sharedUser) => (
+                                sharedUser.userId !== user?._id ? (
+                                    <li
+                                        key={sharedUser.userId}
+                                        className="flex justify-between "
+                                    >
+                                        <div className="flex grow justify-between items-center p-2 border rounded-lg shadow-sm">
+                                            <span>{sharedUser.email}</span>
+                                            <span className="text-sm text-gray-500">{sharedUser.role}</span>
+                                        </div>
+                                        {sharedUser.role !== 'admin' && (
+                                            <button
+                                                onClick={() => handleRemoveUser(sharedUser.userId)}
+                                                className="material-symbols-outlined text-red-500 hover:text-red-600"
+                                            >
+                                                delete
+                                            </button>
+                                        )}
+                                    </li>
+                                ) : null
                             ))}
                         </ul>
                     </div>

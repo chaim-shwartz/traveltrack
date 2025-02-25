@@ -1,5 +1,5 @@
 const express = require('express');
-const { getTrips, addTrip, getTripById, deleteTrip, updateTrip, addUserToTrip, TripUsers } = require('../controllers/tripsController');
+const { getTrips, addTrip, getTripById, deleteTrip, updateTrip, addUserToTrip, TripUsers, removeSharedUserFromTrip } = require('../controllers/tripsController');
 const authenticateJWT = require('../middleware/authenticateJWT');
 
 const router = express.Router();
@@ -15,5 +15,8 @@ router.post('/:id/add-user',authenticateJWT, addUserToTrip);
 
 // קבלת רשימת משתמשים בטיול
 router.get('/:id/users',authenticateJWT, TripUsers);
+
+// הסרת משתמש מטיול
+router.delete('/:id/remove-user/:userId', authenticateJWT, removeSharedUserFromTrip);
 
 module.exports = router;

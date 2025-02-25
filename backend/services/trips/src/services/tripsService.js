@@ -99,9 +99,9 @@ const getTripUsers = async (tripId) => {
         // שליפת המשתמשים מהטבלה המקשרת
         const tripUsers = await knex('trip_users')
             .where({ trip_id: tripId })
-            .select('user_id', 'role');        
+            .select('user_id as userId', 'role');        
         // שליפת user_id
-        const userIds = tripUsers.map((user) => user.user_id);
+        const userIds = tripUsers.map((user) => user.userId);
         
         if (userIds.length === 0) {
             return [];
@@ -121,7 +121,7 @@ const getTripUsers = async (tripId) => {
         // שילוב המידע
         return tripUsers.map((tripUser) => ({
             ...tripUser,
-            ...usersData.find((user) => user._id === tripUser.user_id),
+            ...usersData.find((user) => user._id === tripUser.userId),
         }));
     } catch (error) {
         console.error('Failed to fetch trip users:', error.message);
@@ -160,5 +160,36 @@ const getServiceToken = async () => {
     }
 };
 
+const removeUserFromTrip = async (tripId, userId) => {
+    const user = await knex('trip_users')
+        .where({ trip_id: tripId, user_id: userId })
+        .first();
 
-module.exports = { fetchTrips, createTrip, fetchTripById, removeTrip, updateTripById, getTripUserLink, createTripUserLink, getTripUsers, getServiceToken, getUserIdByEmail };
+    if (user.role === 'admin') {
+        throw new Error('Cannot remove an admin from the trip');
+    }
+
+    return await knex('trip_users').where({ trip_id: tripId, user_id: userId }).del();
+};
+
+const isAdminForTrip = async (userId, tripId) => {
+    const user = await knex('trip_users')
+        .where({ trip_id: tripId, user_id: userId, role: 'admin' })
+        .first();
+    return !!user;
+};
+
+module.exports = { 
+    fetchTrips, 
+    createTrip, 
+    fetchTripById, 
+    removeTrip, 
+    updateTripById, 
+    getTripUserLink, 
+    createTripUserLink, 
+    getTripUsers, 
+    getServiceToken, 
+    getUserIdByEmail,
+    removeUserFromTrip,
+    isAdminForTrip,
+};

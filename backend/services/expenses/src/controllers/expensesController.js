@@ -27,8 +27,7 @@ const getExpenses = async (req, res) => {
 
         // get trip categories
         const tripCategories = await categoriesFromExpenses(serviceToken, tripId)
-
-        // Fetch expenses with the Service Token and User Token
+        // Fetch expenses 
         const expenses = await fetchExpenses(tripCategories, tripId);
 
 
