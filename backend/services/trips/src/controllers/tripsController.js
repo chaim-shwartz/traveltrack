@@ -1,3 +1,4 @@
+const { produceMessage } = require('../services/kafkaProducer');
 const {
     fetchTrips,
     createTrip,
@@ -104,6 +105,14 @@ const addUserToTrip = async (req, res) => {
         }
         // הוספת הקשר לטבלה
         await createTripUserLink(tripId, userId);
+        
+        // send message to kafka
+        await produceMessage("trip-user-added", {
+            tripId,
+            userId,
+            addedBy: req.user.id,
+        });
+
         res.status(200).json({ message: 'User added to the trip successfully' });
     } catch (error) {
         console.error('Error adding user to trip:', error);

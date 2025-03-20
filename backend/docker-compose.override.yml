@@ -40,3 +40,11 @@ services:
       - ./services/auth:/usr/src/app
       - /usr/src/app/node_modules
     command: npm run dev
+  
+  notifications:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./services/notifications:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev

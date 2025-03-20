@@ -17,63 +17,63 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          for service in auth trips expenses users categories; do
+          for service in auth trips expenses users categories notifications; do
             echo "Building and pushing $service..."
             docker build --cache-from=chaimshwartz/$service-service:latest -t chaimshwartz/$service-service:latest ./backend/services/$service
             docker push chaimshwartz/$service-service:latest
           done
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build_and_push
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build_and_push
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
 
-      - name: Add SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 129.159.157.78 >> ~/.ssh/known_hosts
+  #     - name: Add SSH Key
+  #       run: |
+  #         mkdir -p ~/.ssh
+  #         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+  #         chmod 600 ~/.ssh/id_ed25519
+  #         ssh-keyscan -H 129.159.157.78 >> ~/.ssh/known_hosts
 
-      - name: Pull latest code on the server
-        run: ssh ubuntu@129.159.157.78 'cd traveltrack && git pull origin main'
+  #     - name: Pull latest code on the server
+  #       run: ssh ubuntu@129.159.157.78 'cd traveltrack && git pull origin main'
 
-      - name: Use correct KUBECONFIG
-        run: |
-          ssh ubuntu@129.159.157.78 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml'
+  #     - name: Use correct KUBECONFIG
+  #       run: |
+  #         ssh ubuntu@129.159.157.78 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml'
 
-      - name: Wait for K3s API Server
-        run: |
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          until kubectl get nodes; do
-            echo "Waiting for K3s API to be ready..."
-            sleep 5
-          done
+  #     - name: Wait for K3s API Server
+  #       run: |
+  #         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+  #         until kubectl get nodes; do
+  #           echo "Waiting for K3s API to be ready..."
+  #           sleep 5
+  #         done
 
-      - name: Cleanup old Kubernetes Resources
-        run: |
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          kubectl delete -f k8s/services/ --ignore-not-found=true
-          kubectl delete -f k8s/deployments/ --ignore-not-found=true
-          kubectl delete -f k8s/ingress.yml --ignore-not-found=true
+  #     - name: Cleanup old Kubernetes Resources
+  #       run: |
+  #         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+  #         kubectl delete -f k8s/services/ --ignore-not-found=true
+  #         kubectl delete -f k8s/deployments/ --ignore-not-found=true
+  #         kubectl delete -f k8s/ingress.yml --ignore-not-found=true
 
-      - name: Apply Kubernetes Configurations
-        run: |
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          kubectl apply -f k8s/services/
-          kubectl apply -f k8s/deployments/
-          kubectl apply -f k8s/ingress.yml
+  #     - name: Apply Kubernetes Configurations
+  #       run: |
+  #         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+  #         kubectl apply -f k8s/services/
+  #         kubectl apply -f k8s/deployments/
+  #         kubectl apply -f k8s/ingress.yml
 
-      - name: Restart Pods to apply new images
-        run: |
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          for service in auth trips expenses users categories; do
-            kubectl rollout restart deployment/${service}-deployment
-          done
+  #     - name: Restart Pods to apply new images
+  #       run: |
+  #         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+  #         for service in auth trips expenses users categories; do
+  #           kubectl rollout restart deployment/${service}-deployment
+  #         done
 
-      - name: Verify Deployments
-        run: |
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          kubectl get pods -A
+  #     - name: Verify Deployments
+  #       run: |
+  #         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+  #         kubectl get pods -A
