@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const notificationsRoutes = require("./src/routes/notificationsRoutes");
+require("./src/services/kafkaConsumer");
 
 const app = express();
 app.use(express.json());

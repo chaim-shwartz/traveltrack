@@ -1,8 +1,8 @@
 const { Kafka } = require("kafkajs");
 
 const kafka = new Kafka({
-  clientId: "trips-service",
-  brokers: [process.env.KAFKA_BROKER || "localhost:9092"], // כתובת הברוקר
+    clientId: "trips-service",
+    brokers: [process.env.KAFKA_BROKER || "kafka:9092"], 
 });
 
 const producer = kafka.producer();
