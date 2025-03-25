@@ -6,6 +6,7 @@ import 'animate.css';
 import './styles.css';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { UserProvider } from './context/UserContext.tsx';
+import { NotificationsProvider } from './context/NotificationsContext.tsx';
 
 // Register elements and scales
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
@@ -15,7 +16,9 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 createRoot(document.getElementById('root')!).render(
   // <StrictMode>
   <UserProvider>
-    <App />
+    <NotificationsProvider>
+      <App />
+    </NotificationsProvider>
   </UserProvider>
   // </StrictMode>,
 )

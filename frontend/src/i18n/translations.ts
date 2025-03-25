@@ -125,6 +125,7 @@ const translations = {
         user: 'User',
         noTripsFound : 'No trips found',
         you: 'You',
+        noNewNotifications: 'No new notifications',
     },
     he: {
         welcome: 'ברוכים הבאים ל-TravelTrack',
@@ -252,6 +253,7 @@ const translations = {
         user: 'משתמש',
         noTripsFound : 'לא נמצאו טיולים',
         you: 'אתה',
+        noNewNotifications: 'אין הודעות חדשות',
     },
 };
 

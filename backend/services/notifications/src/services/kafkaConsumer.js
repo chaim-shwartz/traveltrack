@@ -1,7 +1,9 @@
 const { Kafka } = require("kafkajs");
-const Notification = require("../models/Notification");
+const knex = require('../config/knex');
 
-module.exports = (io) => { // נוסיף את io כדי שנוכל לשדר הודעות
+// const Notification = require("../models/Notification");
+
+module.exports = (io, userSockets) => { // נוסיף את io כדי שנוכל לשדר הודעות
     const kafka = new Kafka({
         clientId: "notifications-service",
         brokers: ["kafka:9092"],
@@ -23,20 +25,25 @@ module.exports = (io) => { // נוסיף את io כדי שנוכל לשדר הו
                     const data = JSON.parse(message.value.toString());
                     console.log("📌 Parsed message:", data);
 
-                    const notification = await Notification.query().insert({
+                    const notification = await knex("notifications").insert({
                         user_id: data.userId,
                         message: `You have been added to trip ${data.tripId}`,
                         trip_id: data.tripId,
                     });
-
+                    
                     console.log(`✅ Notification added for user ${data.userId}`);
 
-                    // 🔥 שולח את ההתראה לכל הלקוחות המחוברים
-                    io.emit("new-notification", {
-                        user_id: data.userId,
-                        message: notification.message,
-                        trip_id: notification.trip_id,
-                    });
+                    const userSocketId = userSockets.get(data.userId);
+                    if (userSocketId) {
+                        io.to(userSocketId).emit("new-notification", {
+                            user_id: data.userId,
+                            message: notification.message,
+                            trip_id: notification.trip_id,
+                        });
+                        console.log(`📨 Notification sent to user ${data.userId}`);
+                    } else {
+                        console.log(`⚠️ User ${data.userId} is not connected, skipping notification.`);
+                    }
                 } catch (error) {
                     console.error("❌ Error processing message:", error);
                 }

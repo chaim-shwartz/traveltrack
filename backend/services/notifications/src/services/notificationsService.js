@@ -1,7 +1,7 @@
-const Notification = require("../models/Notification");
+const knex = require('../config/knex');
 
 const getUserNotifications = async (userId) => {
-    return await Notification.query().where({ user_id: userId, is_read: false });
+    return await knex("notifications").where({ user_id: userId, is_read: false });
 };
 
 const markNotificationAsRead = async (notificationId) => {
