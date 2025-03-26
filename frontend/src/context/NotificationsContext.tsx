@@ -42,13 +42,20 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
             setNotifications((prev) => [...prev, notification]);
         });
 
-        const oldNotifications = axios.get('http://localhost:5005/api/notifications', {
-            withCredentials: true,
-        });
-        console.log(oldNotifications.data);
-        
-        // setNotifications(oldNotifications.data);
+        const fetchOldNotifications = async () => {
+            try {
+                const response = await axios.get('http://localhost:5005/api/notifications', {
+                    withCredentials: true,
+                });
+                console.log(response.data);
+                // setNotifications(response.data); // Uncomment this line if you want to update notifications
+            } catch (error) {
+                console.error("Failed to fetch old notifications:", error);
+            }
+        };
 
+        fetchOldNotifications();
+        
         return () => {
             socket.disconnect();
         };

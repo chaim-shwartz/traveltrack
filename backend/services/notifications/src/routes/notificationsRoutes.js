@@ -1,8 +1,9 @@
 const express = require("express");
 const { fetchNotifications, readNotification } = require("../controllers/notificationsController");
+const authenticateJWT = require("../middleware/authenticateJWT");
 const router = express.Router();
 
-router.get("/", fetchNotifications);
-router.patch("/:id/read", readNotification);
+router.get("/", authenticateJWT, fetchNotifications);
+router.patch("/:id/read", authenticateJWT, readNotification);
 
 module.exports = router;
