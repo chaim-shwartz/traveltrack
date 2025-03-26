@@ -1,11 +1,13 @@
 require("dotenv").config();
 const express = require("express");
+const cookieParser = require('cookie-parser');
 const http = require("http");
 const cors = require('cors');
 const notificationsRoutes = require("./src/routes/notificationsRoutes");
 const { Server } = require("socket.io");
 
 const app = express();
+app.use(cookieParser());
 const corsOptions = {
     origin: 'http://localhost:5173', // Allow requests only from your frontend
     credentials: true, // Allow sending cookies
