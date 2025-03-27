@@ -107,8 +107,10 @@ const addUserToTrip = async (req, res) => {
         await createTripUserLink(tripId, userId);
         
         // send message to kafka
+        const trip = await fetchTripById(req.user.id, tripId);
         await produceMessage("trip-user-added", {
             tripId,
+            tripName: trip.name,
             userId,
             addedBy: req.user.id,
         });

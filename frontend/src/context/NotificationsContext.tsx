@@ -24,7 +24,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
 
         socket.on("connect", () => {
             console.log("🟢 Connected to notifications WebSocket with ID:", socket.id);
-            
+
             if (user?._id) { // ✅ בודקים אם יש user מחובר ושולחים את ה-ID לשרת
                 console.log(`📡 Registering user ${user._id} to WebSocket`);
                 socket.emit("register", user._id);
@@ -39,23 +39,24 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
 
         socket.on("new-notification", (notification: Notification) => {
             console.log("🔔 New notification received:", notification);
-            setNotifications((prev) => [...prev, notification]);
+            setNotifications((prev) => [notification, ...prev]);
         });
 
-        const fetchOldNotifications = async () => {
+        (async () => {
             try {
                 const response = await axios.get('http://localhost:5005/api/notifications', {
                     withCredentials: true,
                 });
-                console.log(response.data);
+                setNotifications((prev) => [...prev, ...response.data]);
                 // setNotifications(response.data); // Uncomment this line if you want to update notifications
             } catch (error) {
                 console.error("Failed to fetch old notifications:", error);
             }
-        };
+        })()
 
-        fetchOldNotifications();
-        
+
+
+
         return () => {
             socket.disconnect();
         };

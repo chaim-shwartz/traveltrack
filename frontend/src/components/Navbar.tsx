@@ -84,7 +84,6 @@ export default function Navbar({ user }: { user: User | null }) {
     };
 
     const handleNotificationClick = (tripId: string) => {
-        
         navigate(`/trips/${tripId}`);
         setNotifOpen(false);
     };
@@ -142,8 +141,8 @@ export default function Navbar({ user }: { user: User | null }) {
                                 >
                                     notifications
                                     {unreadCount > 0 && (
-                                        <div className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex justify-center shadow-md transform transition duration-200">
-                                            {unreadCount}
+                                        <div className="absolute -top-3 -right-3 bg-red-600 text-white text-[10px]  rounded-full px-1 h-5 flex items-center justify-center shadow-md transform transition duration-200">
+                                            {unreadCount > 99 ? '99+' : unreadCount}
                                         </div>
                                     )}
                                 </button>
@@ -151,13 +150,13 @@ export default function Navbar({ user }: { user: User | null }) {
                                 {notifOpen && (
                                     <div
                                         ref={notifRef}
-                                        className="absolute ltr:right-0 rtl:left-0 text-center mt-2 w-64 bg-white shadow-lg rounded-lg p-2 border border-gray-200 animate__animated animate__fadeIn"
+                                        className="absolute max-h-64 overflow-auto ltr:right-0 rtl:left-0 text-center mt-2 w-64 bg-white shadow-lg rounded-lg p-2 border border-gray-200 animate__animated animate__fadeIn"
                                     >
                                         {notifications.length > 0 ? (
                                             notifications.map((notif, index) => (
                                                 <button
                                                     key={index}
-                                                    className="px-4 py-2 text-gray-800 hover:bg-primary-50 hover:text-primary-900 rounded transition"
+                                                    className="px-4 py-2 border-b text-gray-800 hover:bg-primary-50 hover:text-primary-900 rounded transition"
                                                     onClick={() => handleNotificationClick(notif.trip_id)}
                                                 >
                                                     {notif.message}

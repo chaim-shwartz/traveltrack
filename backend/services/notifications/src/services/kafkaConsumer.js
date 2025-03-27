@@ -25,14 +25,15 @@ module.exports = (io, userSockets) => { // נוסיף את io כדי שנוכל 
                     const data = JSON.parse(message.value.toString());
                     console.log("📌 Parsed message:", data);
 
-                    const notification = await knex("notifications").insert({
+                    const [notification] = await knex("notifications").insert({
                         user_id: data.userId,
-                        message: `You have been added to trip ${data.tripId}`,
+                        message: `You have been added to trip "${data.tripName}"`,
                         trip_id: data.tripId,
-                    });
+                    }).returning('*');
                     
                     console.log(`✅ Notification added for user ${data.userId}`);
-
+                    
+                    console.log(notification);
                     const userSocketId = userSockets.get(data.userId);
                     if (userSocketId) {
                         io.to(userSocketId).emit("new-notification", {
