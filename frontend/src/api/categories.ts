@@ -48,7 +48,7 @@ export const addCategory = async (name: string) => {
             baseURL,
             { name },
             {
-                withCredentials: true, // מאפשר שליחת Cookies
+                withCredentials: true, // Allows sending cookies
             }
         );
         return response.data;
