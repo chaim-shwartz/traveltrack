@@ -59,7 +59,7 @@ const userController = {
         try {
             const user = await userService.getUserByGoogleId(googleId);
             if (!user) {
-                return res.status(404).json(null); // החזרת 404 אם המשתמש לא נמצא
+                return res.status(404).json(null); // Return 404 if the user is not found
             }
             res.status(200).json(user);
         } catch (error) {
@@ -83,7 +83,7 @@ const userController = {
         }
     },
 
-    // אימות משתמש לפי Email
+    // Validate user by Email
     async validateUserByEmail(req, res) {
         const { email } = req.params;
         console.log(email);

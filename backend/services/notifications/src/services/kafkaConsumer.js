@@ -3,7 +3,7 @@ const knex = require('../config/knex');
 
 // const Notification = require("../models/Notification");
 
-module.exports = (io, userSockets) => { // נוסיף את io כדי שנוכל לשדר הודעות
+module.exports = (io, userSockets) => { // Add io so we can broadcast messages
     const kafka = new Kafka({
         clientId: "notifications-service",
         brokers: ["kafka:9092"],

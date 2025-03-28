@@ -64,7 +64,7 @@ const fetchTripById = async (userId, tripId) => {
             'trips.destination',
             'trip_users.role' // Indicates the user's role in the trip
         )
-        .first(); // מחזיר רק רשומה אחת
+        .first(); // Returns only one record
 };
 
 const removeTrip = async (userId, tripId) => {
@@ -107,7 +107,7 @@ const getTripUsers = async (tripId) => {
             return [];
         }
 
-        // שליחת בקשה ל-Users Service
+        // Sending a request to Users Service
         const serviceToken = await getServiceToken();
         const response = await axios.post(
             `${process.env.USERS_SERVICE_URL}/users/bulk`,
@@ -117,7 +117,8 @@ const getTripUsers = async (tripId) => {
             }
         );
 
-        const usersData = response.data; // נתוני המשתמשים מ-Users Service        
+        const usersData = response.data; // User data from Users Service
+
         // Merging the information
         return tripUsers.map((tripUser) => ({
             ...tripUser,

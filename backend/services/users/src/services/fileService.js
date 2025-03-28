@@ -4,15 +4,15 @@ const crypto = require('crypto');
 const path = require('path');
 const { Readable } = require('stream');
 
-// יצירת חיבור GridFS
+// Create GridFS connection
 let gfs;
 const conn = mongoose.connection;
 conn.once('open', () => {
     gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection('uploads'); // קביעת שם האוסף ב-GridFS
+    gfs.collection('uploads'); // Set the collection name in GridFS
 });
 
-// העלאת קובץ ל-GridFS
+// Upload file to GridFS
 async function uploadFile(file) {
     return new Promise((resolve, reject) => {
         const { buffer, originalname } = file;
@@ -39,7 +39,7 @@ async function uploadFile(file) {
     });
 }
 
-// מחיקת קובץ לפי מזהה
+// Delete file by ID
 async function deleteFile(fileId) {
     return new Promise((resolve, reject) => {
         gfs.remove({ _id: fileId, root: 'uploads' }, (err) => {
@@ -49,7 +49,7 @@ async function deleteFile(fileId) {
     });
 }
 
-// קבלת קובץ לפי מזהה
+ // Get file by ID
 async function getFile(fileId) {
     return new Promise((resolve, reject) => {
         gfs.files.findOne({ _id: mongoose.Types.ObjectId(fileId) }, (err, file) => {
@@ -59,7 +59,7 @@ async function getFile(fileId) {
     });
 }
 
-// יצירת Stream לקריאת קובץ
+ // Create Stream to read file
 async function getFileStream(fileId) {
     const file = await getFile(fileId);
     return gfs.createReadStream({ _id: file._id });

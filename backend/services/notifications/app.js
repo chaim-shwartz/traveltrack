@@ -22,7 +22,7 @@ const io = new Server(server, {
     }
 });
 
-const userSockets = new Map(); // Map של משתמשים והחיבורים שלהם
+const userSockets = new Map(); // Map of users and their connections
 
 io.on("connection", (socket) => {
     console.log("🟢 New client connected:", socket.id);
