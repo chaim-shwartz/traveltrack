@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { io, Socket } from "socket.io-client";
-import { useUser } from "./UserContext"; // ✅ נשתמש ב-UserContext כדי לקבל את ה-userId
+import { useUser } from "./UserContext"; // ✅ We will use UserContext to get the userId
 import axios from "axios";
 
 interface Notification {
@@ -17,7 +17,7 @@ const NotificationsContext = createContext<NotificationsContextType | undefined>
 
 export const NotificationsProvider = ({ children }: { children: ReactNode }) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const { user } = useUser(); // ✅ מקבלים את המשתמש מה-Context
+    const { user } = useUser(); // ✅ Getting the user from the Context
 
     useEffect(() => {
         const socket: Socket = io("http://localhost:5005", { transports: ["websocket", "polling"] });
@@ -25,7 +25,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
         socket.on("connect", () => {
             console.log("🟢 Connected to notifications WebSocket with ID:", socket.id);
 
-            if (user?._id) { // ✅ בודקים אם יש user מחובר ושולחים את ה-ID לשרת
+            if (user?._id) { // ✅ Checking if there is a logged-in user and sending the ID to the server
                 console.log(`📡 Registering user ${user._id} to WebSocket`);
                 socket.emit("register", user._id);
             } else {
@@ -60,7 +60,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
         return () => {
             socket.disconnect();
         };
-    }, [user]); // ✅ כאשר ה-user משתנה, החיבור יתעדכן בהתאם
+    }, [user]); // ✅ When the user changes, the connection will update accordingly
 
     return (
         <NotificationsContext.Provider value={{ notifications }}>

@@ -44,7 +44,6 @@ const updateTrip = async (req, res) => {
     const { name, budget, startDate, endDate, destination, image } = req.body;
 
     try {
-
         const updatedRows = await updateTripById(id, { name, budget, startDate, endDate, image, destination });
 
         if (updatedRows) {
@@ -81,11 +80,10 @@ const deleteTrip = async (req, res) => {
     }
 };
 
-
-// הוספת משתמש לטיול
+// Adding a user to the trip
 const addUserToTrip = async (req, res) => {    
-    const { id: tripId } = req.params; // מזהה הטיול
-    const { email } = req.body; // מזהה המשתמש
+    const { id: tripId } = req.params; // Trip ID
+    const { email } = req.body; // User ID
 
     try {
         // Check if the user is an admin
@@ -98,12 +96,12 @@ const addUserToTrip = async (req, res) => {
         if (!userId) {
             return res.status(404).json({ message: 'there is no user with this email' });
         }
-        // בדיקה אם המשתמש כבר מקושר לטיול
+        // Check if the user is already linked to the trip
         const existing = await getTripUserLink(userId, tripId)
         if (existing) {            
             return res.status(200).json({ message: 'User already associated with the trip' });
         }
-        // הוספת הקשר לטבלה
+        // Adding the link to the table
         await createTripUserLink(tripId, userId);
         
         // send message to kafka
@@ -126,7 +124,7 @@ const TripUsers = async (req, res) => {
     const { id: tripId } = req.params;
 
     try {
-        // שאילתת המשתמשים בטיול
+        // Fetching users in the trip
         const users = await getTripUsers(tripId)
         res.status(200).json(users);
     } catch (error) {

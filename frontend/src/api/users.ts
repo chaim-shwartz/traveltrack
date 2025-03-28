@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { User } from '../types/userTypes';
 
-const BASE_URL = 'http://localhost:5004/api/users'; // URL לשירות המשתמשים
+const BASE_URL = 'http://localhost:5004/api/users'; // URL for the user service
 
 /**
  * Get user details
@@ -9,7 +9,7 @@ const BASE_URL = 'http://localhost:5004/api/users'; // URL לשירות המשת
 export const fetchUserDetails = async (): Promise<User> => {
     try {
         const response = await axios.get(`${BASE_URL}/details`, {
-            withCredentials: true, // מאפשר שליחת Cookies
+            withCredentials: true, // Allows sending cookies
         });
         return response.data;
     } catch (error) {
@@ -25,7 +25,7 @@ export const updateUserDetails = async (userDetails: User): Promise<void> => {
     try {
         const formData = new FormData();
 
-        // הוספת פרטי המשתמש ל-FormData
+        // Adding user details to FormData
         Object.entries(userDetails).forEach(([key, value]) => {
             if (value && key !== 'profilePic') {
                 formData.append(key, value.toString());
@@ -37,7 +37,7 @@ export const updateUserDetails = async (userDetails: User): Promise<void> => {
             formData.append('profilePic', userDetails.profilePic);
         }
 
-        // שליחת בקשה לשרת
+        // Sending request to the server
         await axios.post(`${BASE_URL}/update`, formData, {
             withCredentials: true, // מאפשר שליחת Cookies
             headers: {

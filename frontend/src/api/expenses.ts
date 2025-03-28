@@ -69,7 +69,7 @@ const baseURL = 'http://localhost:5002/api/expenses';
 export const fetchExpenses = async (tripId: number) => {
     try {
         const response = await axios.get(`${baseURL}/trip/${tripId}`, {
-            withCredentials: true, // מאפשר שליחת Cookies
+            withCredentials: true, // Allows sending cookies
         });
         return response.data;
     } catch (error) {
@@ -87,7 +87,7 @@ export const addExpense = async (expense: {
 }) => {
     try {
         const response = await axios.post(baseURL, expense, {
-            withCredentials: true, // מאפשר שליחת Cookies
+            withCredentials: true, // Allows sending cookies
         });
         return response.data;
     } catch (error) {
@@ -106,7 +106,7 @@ export const updateExpense = async (expense: {
 }) => {
     try {
         const response = await axios.put(`${baseURL}/${expense.id}`, expense, {
-            withCredentials: true, // מאפשר שליחת Cookies
+            withCredentials: true, // Allows sending cookies
         });
         return response.data;
     } catch (error) {
@@ -118,7 +118,7 @@ export const updateExpense = async (expense: {
 export const deleteExpense = async (id: number) => {
     try {
         await axios.delete(`${baseURL}/${id}`, {
-            withCredentials: true, // מאפשר שליחת Cookies
+            withCredentials: true, // Allows sending cookies
         });
     } catch (error) {
         console.error('Failed to delete expense:', error);

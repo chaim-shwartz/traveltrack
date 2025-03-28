@@ -55,7 +55,7 @@ passport.use(
             try {                
                 const userServiceUrl = `${process.env.USERS_SERVICE_URL}/users/google`;
                 
-                // נסה להביא את המשתמש לפי Google ID
+                // Try to fetch the user by Google ID
                 let user;
                 try {
                     const response = await axios.get(userServiceUrl, {

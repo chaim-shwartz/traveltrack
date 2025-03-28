@@ -17,7 +17,7 @@ const fetchCategories = async (user) => {
 };
 const fetchCategoriesByIds = async (categoryIds) => {
     return await knex('categories')
-        .whereIn('id', categoryIds) // מחזיר רק קטגוריות עם ה-ID המתאים
+        .whereIn('id', categoryIds) // Returns only categories with the matching ID
         .select(
             "id",
             "name",

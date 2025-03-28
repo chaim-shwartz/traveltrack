@@ -10,13 +10,13 @@ router.put('/:id', authenticateJWT, updateTrip);
 router.get('/:id', authenticateJWT, getTripById);
 router.delete('/:id', authenticateJWT, deleteTrip);
 
-// הוספת משתמש לטיול
+// Adding a user to the trip
 router.post('/:id/add-user',authenticateJWT, addUserToTrip);
 
-// קבלת רשימת משתמשים בטיול
+// Getting the list of users in the trip
 router.get('/:id/users',authenticateJWT, TripUsers);
 
-// הסרת משתמש מטיול
+// Removing a user from the trip
 router.delete('/:id/remove-user/:userId', authenticateJWT, removeSharedUserFromTrip);
 
 module.exports = router;

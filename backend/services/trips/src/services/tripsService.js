@@ -12,12 +12,12 @@ const fetchTrips = async (userId) => {
             'trips.end_date as endDate',
             'trips.image as image',
             'trips.destination',
-            'trip_users.role' // הוספת role
+            'trip_users.role' // Adding role
         );
 };
 
 const createTrip = async (userId, tripData) => {
-    // יצירת הטיול בטבלת trips
+    // Creating the trip in the trips table
     const [trip] = await knex('trips')
         .insert({
             name: tripData.name,
@@ -28,7 +28,7 @@ const createTrip = async (userId, tripData) => {
             destination: tripData.destination,
         })
         .returning('id');
-    // הוספת היוצר לטבלת trip_users עם role של admin
+    // Adding the creator to the trip_users table with role of admin
     await knex('trip_users').insert({
         trip_id: trip.id,
         user_id: userId,
@@ -51,9 +51,9 @@ const updateTripById = async (tripId, tripData) => {
 
 const fetchTripById = async (userId, tripId) => {
     return knex('trips')
-        .join('trip_users', 'trips.id', '=', 'trip_users.trip_id') // בדיקת קשר
-        .where('trips.id', tripId) // מזהה הטיול
-        .andWhere('trip_users.user_id', userId) // מזהה המשתמש
+        .join('trip_users', 'trips.id', '=', 'trip_users.trip_id') // Checking connection
+        .where('trips.id', tripId) // Trip ID
+        .andWhere('trip_users.user_id', userId) // User ID
         .select(
             'trips.id',
             'trips.name',
@@ -62,7 +62,7 @@ const fetchTripById = async (userId, tripId) => {
             'trips.end_date as endDate',
             'trips.image as image',
             'trips.destination',
-            'trip_users.role' // מציין את התפקיד של המשתמש בטיול
+            'trip_users.role' // Indicates the user's role in the trip
         )
         .first(); // מחזיר רק רשומה אחת
 };
@@ -96,11 +96,11 @@ const createTripUserLink = async (tripId, userId) => {
 };
 const getTripUsers = async (tripId) => {
     try {
-        // שליפת המשתמשים מהטבלה המקשרת
+        // Fetching users from the linking table
         const tripUsers = await knex('trip_users')
             .where({ trip_id: tripId })
             .select('user_id as userId', 'role');        
-        // שליפת user_id
+        // Fetching user_id
         const userIds = tripUsers.map((user) => user.userId);
         
         if (userIds.length === 0) {
@@ -118,7 +118,7 @@ const getTripUsers = async (tripId) => {
         );
 
         const usersData = response.data; // נתוני המשתמשים מ-Users Service        
-        // שילוב המידע
+        // Merging the information
         return tripUsers.map((tripUser) => ({
             ...tripUser,
             ...usersData.find((user) => user._id === tripUser.userId),
@@ -165,9 +165,10 @@ const removeUserFromTrip = async (tripId, userId) => {
         .where({ trip_id: tripId, user_id: userId })
         .first();
 
-    if (user.role === 'admin') {
-        throw new Error('Cannot remove an admin from the trip');
-    }
+        if (user.role === 'admin') {
+            throw new Error('Cannot remove an admin from the trip');
+        }
+
 
     return await knex('trip_users').where({ trip_id: tripId, user_id: userId }).del();
 };

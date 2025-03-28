@@ -14,10 +14,10 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-const server = http.createServer(app); // יצירת שרת HTTP אחד
+const server = http.createServer(app); // Create a single HTTP server
 const io = new Server(server, {
     cors: {
-        origin: "*", // מאפשר חיבור מהפרונטנד
+        origin: "*", // Allows connection from the frontend
         methods: ["GET", "POST"]
     }
 });
@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
 
     socket.on("register", (userId) => {
         console.log(`🔗 User ${userId} registered with socket ${socket.id}`);
-        userSockets.set(userId, socket.id); // שמירת קשר בין המשתמש לחיבור
+        userSockets.set(userId, socket.id); // Storing the connection between the user and the socket
     });
 
     socket.on("disconnect", () => {
@@ -50,6 +50,6 @@ app.use("/api/notifications", notificationsRoutes);
 
 const PORT = process.env.PORT || 5005;
 
-server.listen(PORT, () => { // מאזין על אותו שרת של Express
+server.listen(PORT, () => { // Listening on the same Express server
     console.log(`🚀 Notifications Service running on http://localhost:${PORT}`);
 });
