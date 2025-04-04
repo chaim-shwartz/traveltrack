@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-// import { useLanguage } from '../context/LanguageContext';
 import useTranslation from '../utils/useTranslation';
 import { updateUserDetails } from '../api/users';
 import { useUser } from '../context/UserContext';
@@ -10,9 +9,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 export default function AccountPage() {
     const { user } = useUser();
 
-    // const [nickname, setNickname] = useState(user.nickname || '');
     const [userDetails, setUserDetails] = useState<User>(user);
-    // const { language, setLanguage } = useLanguage();
     const [editMode, setEditMode] = useState(false);
     const t = useTranslation();
     const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
@@ -112,10 +109,6 @@ export default function AccountPage() {
                             src={userDetails.profilePic}
                             alt={user.name}
                             className="h-auto max-h-screen rounded-lg shadow-lg cursor-zoom-out"
-                            // initial={{ scale: 0.1, x: user?.preferredLanguage === "he" ? -350 : 350 }}
-                            // animate={{ scale: 1, x: 0 }}
-                            // exit={{ scale: 0.1, x: user?.preferredLanguage === "he" ? -350 : 350 }}
-                            // transition={{ duration: 0.3 }}
                             initial={{
                                 scale: 0.1,
                                 x: imagePosition.x - window.innerWidth / 2,
