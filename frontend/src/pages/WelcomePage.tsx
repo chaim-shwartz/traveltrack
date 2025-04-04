@@ -23,7 +23,7 @@ export default function WelcomePage() {
                                 {t.goToTrips}
                             </Link>
                         </div>
-                    ) : ( // הצגת כפתורי התחברות והרשמה אם המשתמש לא מחובר
+                    ) : (
                         <div className="space-x-4 rtl:space-x-reverse">
                             <Link
                                 to="/login"
@@ -41,7 +41,6 @@ export default function WelcomePage() {
                     )}
                 </div>
 
-                {/* מידע נוסף */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
                     <div className="bg-white bg-opacity-80 backdrop-blur-md rounded-lg shadow-lg p-6">
                         <h3 className="text-xl font-bold text-gray-800 mb-4">

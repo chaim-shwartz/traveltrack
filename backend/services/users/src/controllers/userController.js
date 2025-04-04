@@ -100,10 +100,9 @@ const userController = {
         }
     },
     async getPartUsers(req, res) {
-        const { userIds } = req.body;        
+        const { userIds } = req.body;
         try {
-            // שליפת משתמשים לפי IDs            
-            const users = await userService.getPartUserById(userIds)            
+            const users = await userService.getPartUserById(userIds)
             res.status(200).json(users);
         } catch (error) {
             console.error('Failed to fetch users by IDs:', error);
@@ -146,7 +145,7 @@ module.exports = userController;
 //     async updateUserDetails(req, res) {
 //         const updates = req.body;
 //         if (req.file) {
-//             updates.profilePic = req.file.buffer.toString('base64'); // המרה ל-Base64
+//             updates.profilePic = req.file.buffer.toString('base64');
 //         }
 //         try {
 //             const updatedUser = await userService.updateUser(req.user.id, updates);

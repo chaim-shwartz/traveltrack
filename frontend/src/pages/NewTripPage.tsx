@@ -18,7 +18,7 @@ export default function NewTripPage() {
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const { language } = useLanguage();
-    const t = useTranslation(); // שימוש בתרגומים
+    const t = useTranslation();
     const [tripData, setTripData] = useState({
         name: '',
         budget: "",
@@ -67,29 +67,26 @@ export default function NewTripPage() {
     useEffect(() => {
         (async () => {
             try {
-                // קריאה בשפת המשתמש
                 const responseLocal = await axios.get(
                     `http://api.geonames.org/countryInfoJSON?lang=${language}&username=chaim`
                 );
-    
-                // קריאה באנגלית
+
                 const responseEnglish = await axios.get(
                     `http://api.geonames.org/countryInfoJSON?lang=en&username=chaim`
                 );
-    
-                // שילוב התוצאות
+
                 const countryList = responseLocal.data.geonames.map((localCountry: any) => {
                     const englishCountry = responseEnglish.data.geonames.find(
                         (engCountry: any) => engCountry.countryCode === localCountry.countryCode
                     );
                     return {
                         code: localCountry.countryCode,
-                        name: localCountry.countryName, // שם בשפה המקומית
-                        nameEn: englishCountry?.countryName || localCountry.countryCode, // שם באנגלית
+                        name: localCountry.countryName,
+                        nameEn: englishCountry?.countryName || localCountry.countryCode,
                     };
                 });
-    
-                setCountries(countryList);                
+
+                setCountries(countryList);
                 setFilteredCountries(countryList);
             } catch (error) {
                 console.error('Failed to fetch countries:', error);
@@ -141,7 +138,7 @@ export default function NewTripPage() {
     }, [showDropdown]);
 
 
-    const handleSearch = (query: string) => {        
+    const handleSearch = (query: string) => {
         setTripData({ ...tripData, destination: query })
         setSearchQuery(query);
         setFilteredCountries(

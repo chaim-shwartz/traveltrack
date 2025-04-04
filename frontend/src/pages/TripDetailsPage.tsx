@@ -67,7 +67,7 @@ export default function TripDetailsPage() {
     const [tripEditMode, setTripEditMode] = useState(false);
 
 
-    const [sharedUsers, setSharedUsers] = useState<SharedUser[]>([]); // משתמשים שמשותפים לטיול
+    const [sharedUsers, setSharedUsers] = useState<SharedUser[]>([]);
     const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
     const t = useTranslation();
 
@@ -728,7 +728,6 @@ export default function TripDetailsPage() {
                 </div>
             </FloatingWindow>
 
-            {/* פאנל שיתוף */}
             <FloatingWindow
                 isOpen={showSharePanel}
                 onClose={() => setShowSharePanel(false)}
@@ -743,7 +742,6 @@ export default function TripDetailsPage() {
                 }
             >
                 <div className="space-y-4">
-                    {/* רשימת משתמשים שמשותפים לטיול */}
                     <div>
                         <h3 className="text-lg font-bold">{t.sharedWith}</h3>
                         <ul className="space-y-2">
@@ -782,7 +780,6 @@ export default function TripDetailsPage() {
                         </ul>
                     </div>
 
-                    {/* שדה להזנת מייל */}
                     <Input
                         required
                         type="email"

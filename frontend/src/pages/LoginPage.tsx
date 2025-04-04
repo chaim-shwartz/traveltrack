@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginButton from '../components/LoginButton'; // שמירה על הכפתור להתחברות עם Google
+import LoginButton from '../components/LoginButton';
 import useTranslation from '../utils/useTranslation';
 import Input from '../components/Input';
 
@@ -36,7 +36,7 @@ export default function LoginPage() {
                     </button>
                 </form> */}
                 <div className="mt-6 text-center">
-                    <LoginButton /> {/* כפתור התחברות עם Google */}
+                    <LoginButton />
                 </div>
                 {/* <p className="text-text_secondary text-center mt-6">
                     {t.noAccount}{' '}

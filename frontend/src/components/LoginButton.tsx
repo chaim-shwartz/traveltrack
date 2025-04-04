@@ -1,6 +1,6 @@
 import React from 'react';
 import useTranslation from '../utils/useTranslation';
-import  googleIcon  from '../assets/google-icon.svg'
+import googleIcon from '../assets/google-icon.svg'
 
 export default function LoginButton() {
     const t = useTranslation();
@@ -16,7 +16,7 @@ export default function LoginButton() {
         >
             {t.loginWithGoogle}
             <img
-                src={googleIcon} // שים אייקון של Google ב-public
+                src={googleIcon}
                 alt="Google"
                 className="w-6 h-6 ml-2 rtl:mr-2"
             />

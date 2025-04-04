@@ -61,9 +61,8 @@ passport.use(
                     const response = await axios.get(userServiceUrl, {
                         params: { googleId: profile.id },
                     });
-                    user = response.data; // המשתמש נמצא                    
+                    user = response.data; 
                 } catch (error) {
-                    // אם לא נמצא משתמש, יצירת משתמש חדש
                     if (error.response && error.response.status === 404) {
                         const createResponse = await axios.post(userServiceUrl, {
                             googleId: profile.id,
@@ -73,10 +72,9 @@ passport.use(
                         });
                         user = createResponse.data;
                     } else {
-                        throw error; // כל שגיאה אחרת תיזרק
+                        throw error; 
                     }
                 }                
-                // יצירת JWT
                 const token = generateToken({ id: user._id })
                 // const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
                 done(null, { user, token });

@@ -10,7 +10,7 @@ import TripDetailsPage from './pages/TripDetailsPage';
 import Layout from './components/Layout';
 import { fetchUserDetails } from './api/users';
 import { useUser } from './context/UserContext';
-import Logo from './assets/logo.svg'; // לוגו
+import Logo from './assets/logo.svg';
 
 
 export default function App() {
@@ -39,7 +39,7 @@ export default function App() {
         );
     }
 
-    // פונקציה לעמודים מוגנים
+
     const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
         if (!user && location.pathname !== "/") {
             return <Navigate to="/" />;
@@ -52,11 +52,9 @@ export default function App() {
         <LanguageProvider user={user}>
             <Router>
                 <Routes>
-                    {/* עמודים ציבוריים */}
                     <Route path="/" element={<PrivateRoute><WelcomePage /></PrivateRoute>} />
                     <Route path="/login" element={<LoginPage />} />
 
-                    {/* עמודים מוגנים */}
                     <Route
                         path="/trips"
                         element={

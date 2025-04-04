@@ -32,16 +32,15 @@ export const updateUserDetails = async (userDetails: User): Promise<void> => {
             }
         });
 
-        // הוספת קובץ תמונה ל-FormData
         if (userDetails.profilePic) {
             formData.append('profilePic', userDetails.profilePic);
         }
 
         // Sending request to the server
         await axios.post(`${BASE_URL}/update`, formData, {
-            withCredentials: true, // מאפשר שליחת Cookies
+            withCredentials: true,
             headers: {
-                'Content-Type': 'multipart/form-data', // נדרש ל-FormData
+                'Content-Type': 'multipart/form-data',
             },
         });
     } catch (error) {

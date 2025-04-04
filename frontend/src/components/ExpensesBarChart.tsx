@@ -22,7 +22,7 @@
 //     const daysPerPage = 7;
 
 
-//     // קיבוץ הוצאות לפי יום
+
 //     const groupedExpenses = expenses.reduce((acc: Record<string, number>, expense) => {
 //         const day = new Date(expense.date).toLocaleDateString();
 //         acc[day] = (acc[day] || 0) + Number(expense.amount);
@@ -165,7 +165,6 @@
 //                     </button>
 //                 </div>
 //             </div>
-//             {/* חלון צף להצגת הוצאות לפי יום */}
 //             {/* <FloatingWindow
 //                 isOpen={isWindowOpen}
 //                 onClose={() => setIsWindowOpen(false)}

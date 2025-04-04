@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // import { useLanguage } from '../context/LanguageContext';
 import useTranslation from '../utils/useTranslation';
 import { updateUserDetails } from '../api/users';
-import { PhotoIcon } from '@heroicons/react/16/solid';
 import { useUser } from '../context/UserContext';
 import { User } from '../types/userTypes';
 import Input from '../components/Input';
@@ -30,8 +29,8 @@ export default function AccountPage() {
             if (imageRef.current) {
                 const rect = imageRef.current.getBoundingClientRect();
                 setImagePosition({
-                    x: rect.left + rect.width / 2, // מרכז התמונה
-                    y: rect.top + rect.height / 2, // מרכז התמונה
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2,
                 });
             }
             setIsImageOpen(true);
@@ -50,7 +49,7 @@ export default function AccountPage() {
             }
         };
         document.addEventListener('mousedown', handleOutsideClick);
-        return () => {            
+        return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, [languageMenuOpen]);
@@ -119,8 +118,8 @@ export default function AccountPage() {
                             // transition={{ duration: 0.3 }}
                             initial={{
                                 scale: 0.1,
-                                x: imagePosition.x - window.innerWidth / 2, // מיקום יחסי למסך
-                                y: imagePosition.y - window.innerHeight / 2, // מיקום יחסי למסך
+                                x: imagePosition.x - window.innerWidth / 2,
+                                y: imagePosition.y - window.innerHeight / 2,
                             }}
                             animate={{ scale: 1, x: 0, y: 0 }}
                             exit={{
