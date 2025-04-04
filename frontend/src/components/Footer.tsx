@@ -1,4 +1,3 @@
-import React from 'react';
 import useTranslation from '../utils/useTranslation';
 import Logo from '../assets/logo.svg';
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchExpenses, addExpense, deleteExpense, updateExpense } from '../api/expenses';
 import { fetchTripDetails, deleteTrip, updateTrip } from '../api/trips';

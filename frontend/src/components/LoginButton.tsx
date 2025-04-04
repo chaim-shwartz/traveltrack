@@ -1,4 +1,3 @@
-import React from 'react';
 import useTranslation from '../utils/useTranslation';
 import googleIcon from '../assets/google-icon.svg'
 

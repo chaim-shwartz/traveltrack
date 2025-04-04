@@ -1,7 +1,5 @@
-import React from 'react';
 import LoginButton from '../components/LoginButton';
 import useTranslation from '../utils/useTranslation';
-import Input from '../components/Input';
 
 export default function LoginPage() {
     const t = useTranslation();
